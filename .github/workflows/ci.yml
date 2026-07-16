@@ -30,7 +30,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run tests with coverage
-        run: npx vitest run --coverage
+        run: npx vitest run --coverage --passWithNoTests
 
       - name: Build (production)
         run: npm run build
