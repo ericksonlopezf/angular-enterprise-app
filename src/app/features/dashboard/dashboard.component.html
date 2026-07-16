@@ -1,0 +1,80 @@
+<!-- Stats overview -->
+<div class="p-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="stat-card animate-slide-up" style="animation-delay: 0ms">
+      <div class="flex items-center justify-between">
+        <p class="text-xs text-surface-500 dark:text-white/40 uppercase tracking-wider">Total Products</p>
+        <div class="w-8 h-8 rounded-lg bg-primary-500/15 flex items-center justify-center">
+          <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
+          </svg>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-surface-900 dark:text-white mt-2">{{ productCount() }}</p>
+      <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-1">↑ Active in catalog</p>
+    </div>
+
+    <div class="stat-card animate-slide-up" style="animation-delay: 60ms">
+      <div class="flex items-center justify-between">
+        <p class="text-xs text-surface-500 dark:text-white/40 uppercase tracking-wider">Low Stock</p>
+        <div class="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center">
+          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 4h.01M12 3l9 16H3L12 3z"/>
+          </svg>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-surface-900 dark:text-white mt-2">{{ lowStockCount() }}</p>
+      <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">Items with ≤ 10 units</p>
+    </div>
+
+    <div class="stat-card animate-slide-up" style="animation-delay: 120ms">
+      <div class="flex items-center justify-between">
+        <p class="text-xs text-surface-500 dark:text-white/40 uppercase tracking-wider">Out of Stock</p>
+        <div class="w-8 h-8 rounded-lg bg-red-500/15 flex items-center justify-center">
+          <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-surface-900 dark:text-white mt-2">{{ outOfStockCount() }}</p>
+      <p class="text-xs text-red-600 dark:text-red-400 mt-1">Require restocking</p>
+    </div>
+  </div>
+
+  <!-- Recent products table -->
+  @if (recentProducts().length) {
+    <div class="glass-card overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-surface-200/50 dark:border-white/[0.04]">
+        <h3 class="text-sm font-semibold text-surface-900 dark:text-white">Recent Products</h3>
+        <a routerLink="/products" class="text-xs text-primary-400 hover:text-primary-300 transition-colors">
+          View all →
+        </a>
+      </div>
+      <table class="w-full">
+        <tbody>
+          @for (p of recentProducts(); track p.id) {
+            <tr class="table-row">
+              <td class="table-cell">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-primary-500/10 flex items-center justify-center text-primary-400 text-xs font-bold">
+                    {{ p.name.charAt(0) }}
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-surface-900 dark:text-white">{{ p.name }}</p>
+                    <p class="text-xs text-surface-500 dark:text-white/30">{{ p.createdAt | date:'MMM d' }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="table-cell text-right font-mono">{{ p.price | currency }}</td>
+              <td class="table-cell text-right">
+                <span [class]="p.stockQuantity === 0 ? 'badge-danger' : p.stockQuantity < 10 ? 'badge-warning' : 'badge-success'">
+                  {{ p.stockQuantity }} units
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

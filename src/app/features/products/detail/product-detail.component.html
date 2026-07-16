@@ -1,0 +1,94 @@
+<div class="p-6 max-w-3xl mx-auto animate-fade-in">
+  <!-- Back -->
+  <a routerLink="/products" class="inline-flex items-center gap-2 text-surface-400 dark:text-white/40 hover:text-surface-900 dark:hover:text-white text-sm mb-6 transition-colors">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    Back to Products
+  </a>
+
+  @if (isLoading()) {
+    <div class="glass-card p-8 flex items-center justify-center">
+      <svg class="w-8 h-8 animate-spin text-primary-400" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+    </div>
+  } @else if (product()) {
+    <!-- Product header -->
+    <div class="glass-card p-6 mb-4">
+      <div class="flex items-start justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-surface-900 dark:text-white">{{ product()!.name }}</h1>
+          <p class="text-surface-500 dark:text-white/50 mt-1">{{ product()!.description }}</p>
+        </div>
+        <div class="text-right">
+          <p class="text-3xl font-bold text-gradient">{{ product()!.price | currency:'USD' }}</p>
+          @if (product()!.isActive) {
+            <span class="badge-success mt-1">Active</span>
+          } @else {
+            <span class="badge-danger mt-1">Inactive</span>
+          }
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-surface-200/50 dark:border-white/10 grid grid-cols-3 gap-4">
+        <div>
+          <p class="text-xs text-surface-400 dark:text-white/30 uppercase tracking-wider">Stock</p>
+          <p class="text-xl font-bold text-surface-900 dark:text-white mt-0.5">{{ product()!.stockQuantity }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-surface-400 dark:text-white/30 uppercase tracking-wider">ID</p>
+          <p class="text-xs font-mono text-surface-500 dark:text-white/40 mt-1 truncate">{{ product()!.id }}</p>
+        </div>
+        <div>
+          <p class="text-xs text-surface-400 dark:text-white/30 uppercase tracking-wider">Created</p>
+          <p class="text-sm text-surface-500 dark:text-white/60 mt-0.5">{{ product()!.createdAt | date:'MMM d, y' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit form -->
+    <div class="glass-card p-6 mb-4">
+      <h2 class="text-sm font-semibold text-surface-500 dark:text-white/70 uppercase tracking-wider mb-4">Edit Details</h2>
+      <form [formGroup]="editForm" (ngSubmit)="submitEdit()" class="space-y-4">
+        <div>
+          <label class="input-label">Name</label>
+          <input type="text" formControlName="name" class="input-field">
+        </div>
+        <div>
+          <label class="input-label">Description</label>
+          <textarea formControlName="description" class="input-field resize-none" rows="3"></textarea>
+        </div>
+        <div>
+          <label class="input-label">Price (USD)</label>
+          <input type="number" formControlName="price" class="input-field" min="0.01" step="0.01">
+        </div>
+        <div class="flex justify-end">
+          <button type="submit" class="btn-primary" [disabled]="isSavingEdit()">
+            @if (isSavingEdit()) { Saving... } @else { Save Changes }
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Stock adjustment -->
+    <div class="glass-card p-6">
+      <h2 class="text-sm font-semibold text-surface-500 dark:text-white/70 uppercase tracking-wider mb-4">Adjust Stock</h2>
+      <div class="flex items-center gap-3">
+        <input
+          id="stock-qty"
+          type="number"
+          [(ngModel)]="stockAdjustment"
+          class="input-field flex-1"
+          placeholder="Enter quantity (negative to remove)">
+        <button
+          class="btn-primary shrink-0"
+          [disabled]="isSavingStock()"
+          (click)="submitStockAdjustment()">
+          @if (isSavingStock()) { Adjusting... } @else { Adjust Stock }
+        </button>
+      </div>
+      <p class="text-xs text-surface-400 dark:text-white/30 mt-2">Positive = add stock. Negative = remove stock.</p>
+    </div>
+  }
+</div>
